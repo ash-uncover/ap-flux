@@ -1,0 +1,23 @@
+{
+  "name": "ap-flux",
+  "version": "0.0.1",
+  "description": "FLUX implementation",
+  "repository": {
+    "type": "git",
+    "url": "ash-uncover/ap-flux"
+  },
+  "scripts": {
+  },
+  "main": "src/index.js",
+  "keywords": [
+    "ecosystem-react",
+    "flux"
+  ],
+  "author": "aSH <ash.uncover@gmail.com>",
+  "peerDependencies": {
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
