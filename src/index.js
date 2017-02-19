@@ -1,8 +1,20 @@
 // Core modules 
-export ActionBase from './core/ActionBase'
-export ActionRegistry from './core/ActionRegistry'
-export Dispatcher from './core/Dispatcher'
-export ObjectBase from './core/ObjectBase'
-export StoreBase from './core/StoreBase'
-export StoreRegistry from './core/StoreRegistry'
+import ActionBaseSrc from './core/ActionBase'
+export const ActionBase = ActionBaseSrc
+
+import ActionRegistrySrc from './core/ActionRegistry'
+export const ActionRegistry = ActionRegistrySrc
+
+import DispatcherSrc from './core/Dispatcher'
+export const Dispatcher = DispatcherSrc
+
+import ObjectBaseSrc from './core/ObjectBase'
+export const ObjectBase = ObjectBaseSrc
+
+import StoreBaseSrc from './core/StoreBase'
+export const StoreBase = StoreBaseSrc
+
+import StoreRegistrySrc from './core/StoreRegistry'
+export const StoreRegistry = StoreRegistrySrc
+
 // Utils modules
