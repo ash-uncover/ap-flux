@@ -1,20 +1,10 @@
-/**
- *
- */
 export default class ObjectBase {
 	
-	/**
-	 *
-	 * @constructor
-	 */
 	constructor(props) {
-		this.name = props.name.toUpperCase();
+		this.name = props.name.toUpperCase()
 	}
 
-	/**
-	 *
-	 */
 	getName() {
-		return this.name;
+		return this.name
 	}
 }
