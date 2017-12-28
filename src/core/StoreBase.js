@@ -136,16 +136,31 @@ export default class StoreBase extends ObjectBase {
 	}
 
 	storeToLocalStorage() {
-		localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this._content))
+		try {
+			localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this._content))
+		} catch (error) {
+			console.error('failed to write local storage')
+			console.error(error)
+		}
 	}
 
 	loadFromLocalStorage() {
-		this.setContent(JSON.parse(localStorage.getItem(this.getLocalStorageName())) || {})
-		this.notify()
+		try {
+			this.setContent(JSON.parse(localStorage.getItem(this.getLocalStorageName())) || {})
+			this.notify()
+		} catch (error) {
+			console.error('failed to read local storage')
+			console.error(error)	
+		}
 	}
 
 	removeFromLocalStorage() {
-		localStorage.removeItem(this.getLocalStorageName())
+		try {
+			localStorage.removeItem(this.getLocalStorageName())
+		} catch (error) {
+			console.error('failed to reset local storage')
+			console.error(error)
+		}
 		this.setContent({})
 	}
 
