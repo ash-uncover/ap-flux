@@ -1,23 +1,30 @@
 {
   "name": "ap-flux",
   "version": "0.0.1",
-  "description": "FLUX implementation",
+  "description": "javascript FLUX implementation",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test-coverage": "jest --collectCoverage"
+  },
   "repository": {
     "type": "git",
-    "url": "ash-uncover/ap-flux"
+    "url": "https://github.com/ash-uncover/ap-flux"
   },
-  "scripts": {
-  },
-  "main": "src/index.js",
-  "keywords": [
-    "ecosystem-react",
-    "flux"
-  ],
   "author": "aSH <ash.uncover@gmail.com>",
-  "peerDependencies": {
-  },
+  "license": "ISC",
+  "peerDependencies": {},
   "devDependencies": {
+    "ap-utils-test": "0.0.12",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.3",
+    "babel-preset-env": "^1.6.1",
+    "jest": "^22.4.3"
   },
   "dependencies": {
+    "ap-utils-logger": "0.0.14"
   }
 }

@@ -1,10 +1,13 @@
 export default class ObjectBase {
-	
-	constructor(props) {
-		this.name = props.name.toUpperCase()
-	}
+    
+    constructor(args = {}) {
+        if (!args.name) {
+            throw new Error('name is mandatory')
+        }
+        this._name = args.name.toUpperCase()
+    }
 
-	getName() {
-		return this.name
-	}
+    get name() {
+        return this._name
+    }
 }

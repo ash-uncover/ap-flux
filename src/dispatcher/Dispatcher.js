@@ -1,5 +1,5 @@
 import ObjectBase from 'core/ObjectBase'
-import ActionRegistry from 'core/ActionRegistry'
+import ActionRegistry from 'actions/ActionRegistry'
 
 let DEBUG = true;
 

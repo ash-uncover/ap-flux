@@ -1,0 +1,11 @@
+# Logs
+npm-debug.log*
+
+# Coverage directory
+__coverage__
+
+# Dependency directories
+node_modules
+
+# Distribution
+dist
