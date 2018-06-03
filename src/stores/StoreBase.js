@@ -33,43 +33,19 @@ export default class StoreBase extends ObjectBase {
 
     /* REGISTER & NOTIFY */
 
-    register(path, controller, callback) {
-        // Find the correct listener position
-        const listener = extractPath(path).reduce((listeners, pathElem) => {
-            listeners[pathElem] = Object.assign(
-                { [CALLBACKS]: [] },
-                listeners[pathElem]
-            )
-            return listeners[pathElem]
-        }, this.listeners)
-        // Add callback
-        listener[CALLBACKS].push({
-            controller: controller,
-            callback: callback
-        })
+    register(path, callback) {
+        const listener = this._getListeners(path)
+        listener[CALLBACKS].push(callback)
     }
 
-    unregister(controller) {
-        this._unregisterRecurse(this.listeners, controller)
-    }
-    _unregisterRecurse(listeners, controller) {
-        Object.keys(listeners).forEach((key) => {
-            if (key === CALLBACKS) {
-                listeners[CALLBACKS] = listeners[CALLBACKS].filter((listener) => {
-                    return listener.controller !== controller
-                })
-            } else {
-                this._unregisterRecurse(listeners[key], controller)
-            }
-        })
+    unregister(path, callback) {
+        const listener = this._getListeners(path)
+        listener[CALLBACKS].splice(listener[CALLBACKS].indexOf(callback), 1)
     }
 
-    notify() {
-        this._notifyListeners(this.listeners)
-    }
-    notifyPath(path) {
+    notify(path) {
         // call top level listeners
-        this.notify()
+        this._notifyListeners(this.listeners)
         // Drill through the path
         extractPath(path).reduce((listeners, pathElem) => {
             if (listeners && listeners[pathElem]) {
@@ -80,49 +56,43 @@ export default class StoreBase extends ObjectBase {
         }, this.listeners)
     }
     _notifyListeners(listeners) {
-        listeners[CALLBACKS].forEach((listener) => listener.callback())
+        listeners[CALLBACKS].forEach((callback) => callback())
+    }
+
+    _getListeners(path) {
+        return extractPath(path).reduce((listeners, pathElem) => {
+            listeners[pathElem] = Object.assign(
+                { [CALLBACKS]: [] },
+                listeners[pathElem]
+            )
+            return listeners[pathElem]
+        }, this.listeners)
     }
 
     /* DATA MANAGEMENT */
 
     getData(path) {
-        if (path) {
-            let spath = path.split('/')
-            let current = this._content
-            for (let i = 0 ; i < spath.length ; i++) {
-                if (spath[i] !== '') {
-                    current = current[spath[i]]
-                    if (typeof current === 'undefined' || current === null) {
-                        return undefined
-                    }
-                }
+        return extractPath(path).reduce((data, pathElem) => {
+            if (data) {
+                return data[pathElem]                
             }
-            return current
-        } else {
-            return this._content
-        }
+        }, this.content)
     }
 
     setData(path, value) {
-        if (path) {
-            let spath = path.split('/').filter(function(s) { return !!s })
-            if (spath.length) {
-                let current = this._content
-                for (let i = 0 ; i < spath.length - 1 ; i++) {
-                    if (spath[i] !== '') {
-                        let next = current[spath[i]]
-                        if (typeof next === 'undefined' || next === null) {
-                            current[spath[i]] = {}
-                        }
-                        current = current[spath[i]]
-                    }
-                }
-                current[spath[spath.length - 1]] = value
+        let done = false
+        const concretePath = extractPath(path)
+        let data = concretePath.reduce((data, pathElem, index) => {
+            if (index === concretePath.length - 1) {
+                data[pathElem] = value
+                done = true
             } else {
-                throw 'must specify a real path'
+                data[pathElem] = data[pathElem] || {}    
             }
-        } else {
-            throw 'must specify a path'
+            return data[pathElem]
+        }, this.content)
+        if (!done) {
+            this.content = value
         }
     }
 
@@ -145,7 +115,11 @@ export default class StoreBase extends ObjectBase {
     loadFromLocalStorage() {
         try {
             const content = localStorage.getItem(this.localStorageName)
-            this.content = JSON.parse(content) || {}
+            if (content) {
+                this.content = JSON.parse(content)    
+            } else {
+                this.content = {}
+            }
             this.notify()
         } catch (error) {
             this._logger.error('failed to read local storage')
