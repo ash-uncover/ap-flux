@@ -17,13 +17,7 @@ export const STATUS = {
 class Dispatcher {
 
     constructor() {
-        this._callbacks = []
-        this._errors = []
-        this._onGoing = {}
-    }
-
-    static get STATUS() {
-        return STATUS
+        this.reset()
     }
 
     /* GETTERS & SETTERS */
@@ -42,19 +36,38 @@ class Dispatcher {
 
     /* METHODS */
 
+    reset() {
+        this._callbacks = {}
+        this._errors = {}
+        this._onGoing = {}
+    }
+
     register(action, success, error) {
+        this.registerSuccess(action, success)
+        this.registerError(action, success)
+    }
+
+    registerSuccess(action, callback) {
         const a = ActionRegistry.getAction(action)
         if (a) {
-            if (success) {
-                this._callbacks[a.getName()] = this._callbacks[a.getName()] || []
-                this._callbacks[a.getName()].push(success)
-            }
-            if (error) {
-                this._errors[a.getName()] = this._errors[a.getName()] || []
-                this._errors[a.getName()].push(error)
+            if (callback) {
+                this._callbacks[a.name] = this._callbacks[a.name] || []
+                this._callbacks[a.name].push(callback)
             }
         } else {
-            LOGGER.error(`register: unknown action: "${action}"`)
+            LOGGER.error(`registerSucess: unknown action: "${action}"`)
+        }
+    }
+
+    registerError(action, callback) {
+        const a = ActionRegistry.getAction(action)
+        if (a) {
+            if (callback) {
+                this._errors[a.name] = this._errors[a.name] || []
+                this._errors[a.name].push(callback)
+            }
+        } else {
+            LOGGER.error(`registerError: unknown action: "${action}"`)
         }
     }
 
@@ -76,37 +89,37 @@ class Dispatcher {
                         delete this._onGoing[execId]
                         LOGGER.debug('>> OK ' + action)
                         LOGGER.debug(result)
-                        const callbacks = this._callbacks[a.getName()] || []
+                        const callbacks = this._callbacks[a.name] || []
                         for (let i = 0 ; i < callbacks.length ; i++) {
                             callbacks[i](result, param)
                         }
                         if (result && result.id) {
-                            resolve({ action: action, status: 'ok', id: result.id })
+                            resolve({ action: action, status: STATUS.SUCCESS, id: result.id })
                         } else {
-                            resolve({ action: action, status: 'ok' })
+                            resolve({ action: action, status: STATUS.SUCCESS })
                         }
                     }).
                     catch(error => {
                         delete this._onGoing[execId]
                         LOGGER.debug('>> ERR ')
                         LOGGER.debug(error)
-                        var errors = this._errors[a.getName()] || []
+                        const errors = this._errors[a.name] || []
                         for (let i = 0 ; i < errors.length ; i++) {
                             errors[i](error)
                         }
-                        reject({ action: action, status: 'error' })
+                        reject({ action: action, status: STATUS.FAILURE })
                     })
                 }.bind(this))
             }
         } else if (a) {
             return new Promise(function(resolve, reject) {
-                LOGGER.error('missing do on action: ' + action)
-                reject( { action: action, status: 'Missing do' } )
+                LOGGER.error(`missing do on action: ${action}`)
+                reject( { action: action, status: STATUS.FAILURE } )
             })
         } else {
             return new Promise(function(resolve, reject) {
-                LOGGER.error('Unknown action: ' + action)
-                reject({ action: action, status: 'Unknown action' })
+                LOGGER.error(`Unknown action: ${action}`)
+                reject({ action: action, status: STATUS.FAILURE })
             })
         }
     }

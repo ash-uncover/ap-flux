@@ -18,7 +18,9 @@ class ActionRegistryCreator {
     }
 
     getAction(action) {
-        return this._actions[action.toUpperCase()]
+        if (action && action.toUpperCase) {
+            return this._actions[action.toUpperCase()]
+        }
     }
 
     execute(action, args) {
