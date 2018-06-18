@@ -1,6 +1,6 @@
-import ObjectBase from 'core/ObjectBase'
-import StoreRegistry from 'stores/StoreRegistry'
-import { extractPath } from 'stores/StoreRegistry'
+import ObjectBase from '../core/ObjectBase'
+import StoreRegistry from '../stores/StoreRegistry'
+import { extractPath } from '../stores/StoreRegistry'
 
 import Logger from 'ap-utils-logger'
 
@@ -8,14 +8,20 @@ const CALLBACKS = '__CALLBACKS__'
 
 export default class StoreBase extends ObjectBase {
 
-    constructor(props) {
+    constructor(props = {}) {
         super(props)
         
-        this._content = props.content || {}
-        this._listeners = { [CALLBACKS]: [] }
-        this._logger = new Logger(props.name)
+        this._baseContent = props.content || {}
+
+        this.reset()
 
         StoreRegistry.registerStore(this)
+    }
+
+    reset() {
+        this._content = this._baseContent
+        this._listeners = { [CALLBACKS]: [] }
+        this._logger = new Logger(this.name)
     }
 
     /* GETTERS & SETTERS */

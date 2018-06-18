@@ -110,16 +110,14 @@ describe('StoreRegistry', () => {
                 unregister: jest.fn() 
             }
             const path = '//1/2//'
-            const object = {}
             const callback = jest.fn()
             StoreRegistry.registerStore(store)
 
-            StoreRegistry.register('sTorE', path, object, callback)
+            StoreRegistry.register('sTorE', path, callback)
 
             expect(store.register.mock.calls.length).toBe(1)
             expect(store.register.mock.calls[0][0]).toEqual('1/2')
-            expect(store.register.mock.calls[0][1]).toEqual(object)
-            expect(store.register.mock.calls[0][2]).toEqual(callback)
+            expect(store.register.mock.calls[0][1]).toEqual(callback)
         })
     })
 
@@ -132,15 +130,15 @@ describe('StoreRegistry', () => {
                 unregister: jest.fn() 
             }
             const path = '//1/2//'
-            const object = {}
             const callback = jest.fn()
             StoreRegistry.registerStore(store)
 
-            StoreRegistry.register('sTorE', path, object, callback)
-            StoreRegistry.unregister('sTorE', object)
+            StoreRegistry.register('sTorE', path, callback)
+            StoreRegistry.unregister('sTorE', path, callback)
 
             expect(store.unregister.mock.calls.length).toBe(1)
-            expect(store.unregister.mock.calls[0][0]).toEqual(object)
+            expect(store.unregister.mock.calls[0][0]).toEqual('1/2')
+            expect(store.unregister.mock.calls[0][1]).toEqual(callback)
         })
     })
 

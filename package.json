@@ -1,6 +1,6 @@
 {
   "name": "ap-flux",
-  "version": "0.0.1",
+  "version": "0.0.14",
   "description": "javascript FLUX implementation",
   "main": "dist/index.js",
   "scripts": {

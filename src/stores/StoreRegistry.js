@@ -41,12 +41,12 @@ class StoreRegistryCreator {
         this._stores[normalizeName(store.name)] = store
     }
 
-    register (storeName, path, object, callback) {
-        this.getStore(storeName).register(normalizePath(path), object, callback)
+    register (storeName, path, callback) {
+        this.getStore(storeName).register(normalizePath(path), callback)
     }
 
-    unregister (storeName, object) {
-        this.getStore(storeName).unregister(object)
+    unregister (storeName, path, callback) {
+        this.getStore(storeName).unregister(normalizePath(path), callback)
     }
 
     getStore (storeName) {

@@ -1,5 +1,5 @@
-import ObjectBase from 'core/ObjectBase'
-import ActionRegistry from 'actions/ActionRegistry'
+import ObjectBase from '../core/ObjectBase'
+import ActionRegistry from '../actions/ActionRegistry'
 
 import Logger from 'ap-utils-logger'
 const LOGGER = new Logger('Dispatcher')
@@ -44,7 +44,7 @@ class Dispatcher {
 
     register(action, success, error) {
         this.registerSuccess(action, success)
-        this.registerError(action, success)
+        this.registerError(action, error)
     }
 
     registerSuccess(action, callback) {
